@@ -1,0 +1,9 @@
+.vscode/
+CMakeFiles/
+debug/
+build/
+Nexor.dir/
+x64/
+
+.cmake 
+.filters

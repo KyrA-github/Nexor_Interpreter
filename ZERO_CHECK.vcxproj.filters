@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\CMakeFiles\7bf67c789b8c208a1716b6aaa0251785\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{746A8874-2568-335F-854C-8D28ECBF8EDE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
