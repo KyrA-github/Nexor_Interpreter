@@ -4,7 +4,7 @@ void Interpreter::InterpreterMainFunc(string main_source_file_directory, string 
     ReadingFileLineByLine(main_source_file_directory, '/'+ sourse_file_name);
 }
 
-string Interpreter::LineBetweenTokens(string token_1, string line) {
+string Interpreter::LineBetweenToken(string token_1, string line) {
     size_t start_pos = line.find(token_1);
     if (start_pos == string::npos)
         return ""; 
@@ -24,7 +24,7 @@ void Interpreter::ReadTokensFromLineFromFunction(string line)
             cout << "GGGGGG:"<< token << endl;
             cout << line << endl;
             
-            temp_func = LineBetweenTokens(token, line);
+            temp_func = LineBetweenToken(token, line);
             if (temp_func == "int")
             {
                 cout << "YYYYYY:"<< token << endl;
@@ -117,7 +117,7 @@ void Interpreter::ReadTokensFromLine()
 
 void Interpreter::ExecutionOfFunction(string function_content)
 {
-    istringstream iss(function_content);
+    std::istringstream iss(function_content);
     string line;
     while (getline(iss, line))
     {
@@ -128,6 +128,7 @@ void Interpreter::ExecutionOfFunction(string function_content)
         previous_line = line;
     }
 }
+
 
 
 void Interpreter::ReadingFileLineByLine(string main_source_file_directory, string sourse_file_name)
