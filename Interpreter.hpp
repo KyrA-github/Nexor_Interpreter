@@ -10,7 +10,9 @@ public:
     using FunctionBlock = function<void()>;
 
     unordered_map<string, string> functionBlocks;
+    unordered_map<string, string> metodlocks;
     unordered_map<string, int> variablesInteger;
+    vector<string> list_function;
 
     void InterpreterMainFunc(string main_source_file_directory, string sourse_file_name);
 private:
@@ -33,6 +35,9 @@ private:
 
     //operators + - * /
     void PerformingMathematicalOperations(string Variable1value, string Variable2value, string Variable3sum, char operation);
+
+    //metods
+    void print(string *line);
 
     string line_file;
     string previous_line;

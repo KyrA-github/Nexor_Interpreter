@@ -30,6 +30,21 @@ void Interpreter::ReadingFileLineByLine(string main_source_file_directory, strin
     }
 }
 
+//чтение функции и выполнение
+void Interpreter::ExecutionOfFunction(string function_content)
+{
+    std::istringstream iss(function_content);
+    string line;
+    while (getline(iss, line))
+    {
+        if (!line.empty())
+        {
+            ReadTokensFromLineFromFunction(line);
+        }
+        previous_line = line;
+    }
+}
+
 
 //
 string Interpreter::SearchVariablesByNameINT(unordered_map<string, int> value)
@@ -102,10 +117,21 @@ void Interpreter::PerformingMathematicalOperations(string Variable1value, string
     setVariablesInteger(Variable3sum, result);
 
 }
+void Interpreter::print(string *line)
+{
+    cout << line << endl;
+}
 
 //выполнение токенов в функции
 void Interpreter::ReadTokensFromLineFromFunction(string line)
 {
+    for(string value_function : list_function)
+    {
+        if (LineContainsWord(value_function, line))
+        {
+            callFunction(value_function);
+        }
+    }
     if (LineContainsWord("int", line))
     {
         setVariablesInteger(LineBetweenTokens("int ", " =", line), stoi(LineBetweenTokens(" = ", ";", line)));
@@ -131,7 +157,8 @@ void Interpreter::ReadTokensFromLineFromFunction(string line)
     {
         PerformingMathematicalOperations(LineBetweenTokens("= ", " / ", line), LineBetweenTokens(" / ", ";", line), LineBetweenTokens("    ", " =", line), '/');
     }           
-
+    
+    
     
     // for (const auto& token : tokens) 
     // {
@@ -177,6 +204,7 @@ void Interpreter::ReadTokensFromLine()
                         functionContent.clear();
                     }
                     currentFunction = LineBetweenTokens(" ", "(", line_file);
+                    list_function.push_back(currentFunction);
                     if (line_file.back() == '{')
                     {
                         writing_content_func = true;
@@ -214,23 +242,6 @@ void Interpreter::ReadTokensFromLine()
     }
 
 }
-
-//чтение функции и выполнение
-void Interpreter::ExecutionOfFunction(string function_content)
-{
-    std::istringstream iss(function_content);
-    string line;
-    while (getline(iss, line))
-    {
-        if (!line.empty())
-        {
-            ReadTokensFromLineFromFunction(line);
-        }
-        previous_line = line;
-    }
-}
-
-
 
 
 // поиск строки межру символами
