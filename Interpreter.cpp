@@ -122,8 +122,63 @@ void Interpreter::print(string *line)
     cout << line << endl;
 }
 
+string Interpreter::IterateOverStringCharacterByCharacter(string line)
+{
+    string result;
+    for (char c : line)
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            if (c == tokens_char[i])
+            {
+                size_t pos = line.find(tokens_char[i]); 
+                string resultViariableName;
+                int resultViariableValue;
+                if (pos != string::npos)
+                {
+                    resultViariableName = line.substr(0, pos);
+                    break;
+                }     
+            }
+        }
+    }
+    return result;
+}
+
+void Interpreter::DivisionIntoMethodsAndTokens(string line)
+{//a = b * (c / d)
+    line = removeSpaces(line);
+    size_t pos = line.find('='); 
+
+    string MetodsAndTokens;
+
+    string resultViariableName;
+    int resultViariableValue;
+    if (pos != string::npos)
+    {
+        resultViariableName = line.substr(0, pos);
+        MetodsAndTokens = line.substr(pos + 1);
+
+
+
+    }
+}
+string Interpreter::removeSpaces(const string& str) 
+{
+  string result;
+  result.reserve(str.size()); // оптимизация
+
+  for (char c : str) {
+    if (c != ' ') {
+      result += c; 
+    }
+  }
+  return result;
+}
+
+
 //выполнение токенов в функции
-void Interpreter::ReadTokensFromLineFromFunction(string line)
+void Interpreter::ReadTokensFunction(string line)
 {
     for(string value_function : list_function)
     {
