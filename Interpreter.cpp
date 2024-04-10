@@ -39,7 +39,7 @@ void Interpreter::ExecutionOfFunction(string function_content)
     {
         if (!line.empty())
         {
-            ReadTokensFromLineFromFunction(line);
+            ReadTokensFunction(line);
         }
         previous_line = line;
     }
@@ -122,46 +122,140 @@ void Interpreter::print(string *line)
     cout << line << endl;
 }
 
-string Interpreter::IterateOverStringCharacterByCharacter(string line)
-{
-    string result;
-    for (char c : line)
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            if (c == tokens_char[i])
-            {
-                size_t pos = line.find(tokens_char[i]); 
-                string resultViariableName;
-                int resultViariableValue;
-                if (pos != string::npos)
-                {
-                    resultViariableName = line.substr(0, pos);
-                    break;
-                }     
+// Функция для проверки, является ли символ разделителем
+bool Interpreter::isDelimiter(char c) {
+    return c == ' ' || c == '=' || c == '\t' || c == '\n' || c == '\r' || c == ';';
+}
+
+// Функция для проверки, является ли символ оператором
+bool Interpreter::isOperator(char c) {
+    return c == '+' || c == '-' || c == '*' || c == '/';
+}
+
+// Функция для проверки, является ли символ буквой (для имён переменных и функций)
+bool Interpreter::isLetter(char c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+// Функция для проверки, является ли строка именем переменной
+bool Interpreter::isVariable(const string& token, const unordered_map<string, int>& variables) {
+    for (const auto& var : variables) {
+        if (token == var.first)
+            return true;
+    }
+    return false;
+}
+
+// Функция для разделения строки на токены
+vector<string> Interpreter::tokenize(const string& expression) {
+    vector<string> tokens;
+    string token;
+    for (char c : expression) {
+        if (isDelimiter(c)) {
+            if (!token.empty()) {
+                tokens.push_back(token);
+                token.clear();
             }
+            if (c == ';') {
+                    tokens.push_back(std::string(1, c));
+                }
+        } else if (isOperator(c)) {
+            if (!token.empty()) {
+                tokens.push_back(token);
+                token.clear();
+            }
+            tokens.push_back(string(1, c));
+        } else if (isLetter(c)) {
+            token += c;
+        } else {
+            token += c;
         }
     }
+    if (!token.empty())
+        tokens.push_back(token);
+    return tokens;
+}
+int Interpreter::performOperation(int a, int b, char op) {
+        switch (op) {
+            case '+':
+                return a + b;
+            case '-':
+                return a - b;
+            case '*':
+                return a * b;
+            case '/':
+                if (b != 0)
+                    return a / b;
+                else
+                    throw runtime_error("Division by zero");
+            default:
+                throw runtime_error("Invalid operator");
+        }
+    }
+// Функция для вычисления значения выражения
+int Interpreter::evaluateExpression(string expression) {
+    string expressionWithoutSpaces = removeSpaces(expression);
+    vector<string> expressions = tokenize(expressionWithoutSpaces);
+
+    int result = 0;
+    char operation = '+';
+    string variableName;
+    for (const auto& expr : expressions) {
+            if (expr == ";") {
+                continue; // Пропускаем символ конца строки
+            }
+            vector<string> tokens = tokenize(expr);
+            for (const auto& token : tokens) {
+                if (isVariable(token, variablesInteger)) {
+                    variableName = token;
+                } else if (isOperator(token[0])) {
+                    operation = token[0];
+                } else {
+                    int value = stoi(token);
+                    if (operation == '+') {
+                        result += value;
+                    } else if (operation == '-') {
+                        result -= value;
+                    } else if (operation == '*') {
+                        result *= value;
+                    } else if (operation == '/') {
+                        if (value != 0) {
+                            result /= value;
+                        } else {
+                            throw runtime_error("Division by zero");
+                        }
+                    }
+                    setVariablesInteger(variableName, result);
+                }
+            }
+        }
     return result;
 }
+
+
 
 void Interpreter::DivisionIntoMethodsAndTokens(string line)
 {//a = b * (c / d)
     line = removeSpaces(line);
     size_t pos = line.find('='); 
 
-    string MetodsAndTokens;
-
     string resultViariableName;
-    int resultViariableValue;
     if (pos != string::npos)
     {
         resultViariableName = line.substr(0, pos);
-        MetodsAndTokens = line.substr(pos + 1);
-
-
-
+        setVariablesInteger(resultViariableName, evaluateExpression(line));
     }
+}
+string Interpreter::variablesName(string line)
+{//a = b * (c / d)
+    line = removeSpaces(line);
+    size_t pos = line.find('='); 
+    string resultViariableName;
+    if (pos != string::npos)
+    {
+        resultViariableName = line.substr(0, pos);
+    }
+    return resultViariableName;
 }
 string Interpreter::removeSpaces(const string& str) 
 {
@@ -196,22 +290,27 @@ void Interpreter::ReadTokensFunction(string line)
         temp = LineBetweenTokens("(", ")", line);
         cout << getVariableInteger(temp) << endl;
     }
-    else if (LineContainsWord("+",line))
+    else if (LineContainsWord("+", line) || LineContainsWord("-", line)  || LineContainsWord("*", line) || LineContainsWord("/", line))
     {
-        PerformingMathematicalOperations(LineBetweenTokens("= ", " + ", line), LineBetweenTokens(" + ", ";", line), LineBetweenTokens("    ", " =", line), '+');
-    }           
-    else if (LineContainsWord("-",line))
-    {
-        PerformingMathematicalOperations(LineBetweenTokens("= ", " - ", line), LineBetweenTokens(" - ", ";", line), LineBetweenTokens("    ", " =", line), '-');
-    }           
-    else if (LineContainsWord("*",line))
-    {
-        PerformingMathematicalOperations(LineBetweenTokens("= ", " * ", line), LineBetweenTokens(" * ", ";", line), LineBetweenTokens("    ", " =", line), '*');
-    }           
-    else if (LineContainsWord("/",line))
-    {
-        PerformingMathematicalOperations(LineBetweenTokens("= ", " / ", line), LineBetweenTokens(" / ", ";", line), LineBetweenTokens("    ", " =", line), '/');
-    }           
+        DivisionIntoMethodsAndTokens(line);
+    }
+    
+    // else if (LineContainsWord("+",line))
+    // {
+    //     PerformingMathematicalOperations(LineBetweenTokens("= ", " + ", line), LineBetweenTokens(" + ", ";", line), LineBetweenTokens("    ", " =", line), '+');
+    // }           
+    // else if (LineContainsWord("-",line))
+    // {
+    //     PerformingMathematicalOperations(LineBetweenTokens("= ", " - ", line), LineBetweenTokens(" - ", ";", line), LineBetweenTokens("    ", " =", line), '-');
+    // }           
+    // else if (LineContainsWord("*",line))
+    // {
+    //     PerformingMathematicalOperations(LineBetweenTokens("= ", " * ", line), LineBetweenTokens(" * ", ";", line), LineBetweenTokens("    ", " =", line), '*');
+    // }           
+    // else if (LineContainsWord("/",line))
+    // {
+    //     PerformingMathematicalOperations(LineBetweenTokens("= ", " / ", line), LineBetweenTokens(" / ", ";", line), LineBetweenTokens("    ", " =", line), '/');
+    // }           
     
     
     
@@ -377,3 +476,30 @@ int Interpreter::getVariableInteger(const string& name) {
         return 0;
     }
 }
+
+
+
+/*
+string Interpreter::IterateOverStringCharacterByCharacter(string line)
+{
+    string result;
+    for (char c : line)
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            if (c == tokens_char[i])
+            {
+                size_t pos = line.find(tokens_char[i]); 
+                string resultViariableName;
+                int resultViariableValue;
+                if (pos != string::npos)
+                {
+                    resultViariableName = line.substr(0, pos);
+
+                }     
+            }
+        }
+    }
+    return result;
+}
+*/

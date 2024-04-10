@@ -1,8 +1,6 @@
 #pragma once
 #include "globals.hpp"
-#include <unordered_map>
-#include <functional>
-#include <sstream>
+
 
 class Interpreter
 {
@@ -59,6 +57,17 @@ private:
     void ReadTokensFunction(string line);
     //чтение по строчно
     void ReadingFileLineByLine(string main_source_file_directory, string sourse_file_name);
+
+    string variablesName(string line);
+
+
+    int evaluateExpression(string expression);
+    vector<string> tokenize(const string& expression);
+    bool isVariable(const string& token, const unordered_map<string, int>& variables);
+    bool isLetter(char c);
+    bool isOperator(char c);
+    bool isDelimiter(char c);
+    int performOperation(int a, int b, char op);
 
 
     string IterateOverStringCharacterByCharacter(string line);
