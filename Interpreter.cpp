@@ -1,13 +1,13 @@
 #include "Interpreter.hpp"
 
 //основная функция
-void Interpreter::InterpreterMainFunc(string main_source_file_directory, string sourse_file_name)
+void Interpreter::InterpreterMainFunc(const string& main_source_file_directory, const string& sourse_file_name)
 {
     ReadingFileLineByLine(main_source_file_directory, '/'+ sourse_file_name);
 }
 
 // чтение файла
-void Interpreter::ReadingFileLineByLine(string main_source_file_directory, string sourse_file_name)
+void Interpreter::ReadingFileLineByLine(const string& main_source_file_directory, const string& sourse_file_name)
 {
     ifstream main_source_file(main_source_file_directory + sourse_file_name);
 
@@ -22,7 +22,7 @@ void Interpreter::ReadingFileLineByLine(string main_source_file_directory, strin
             }
             previous_line = line_file;
         }
-        callFunction("$start");
+        callFunction("start");
     }
     else
     {
@@ -31,7 +31,7 @@ void Interpreter::ReadingFileLineByLine(string main_source_file_directory, strin
 }
 
 //чтение функции и выполнение
-void Interpreter::ExecutionOfFunction(string function_content)
+void Interpreter::ExecutionOfFunction(const string& function_content)
 {
     std::istringstream iss(function_content);
     string line;
@@ -45,78 +45,6 @@ void Interpreter::ExecutionOfFunction(string function_content)
     }
 }
 
-
-//
-string Interpreter::SearchVariablesByNameINT(unordered_map<string, int> value)
-{
-    for (const auto& pair : variablesInteger) {
-
-    }
-    return "";
-}
-
-void Interpreter::PerformingMathematicalOperations(string Variable1value, string Variable2value, string Variable3sum, char operation)
-{
-    bool value1 = false;
-    bool value2 = false;
-    int value1Int = 0;
-    int value2Int = 0;
-    int result = 0;
-    try
-    {
-        temp_int_list[0] = stoi(Variable1value);
-        value1 = true;
-    }
-    catch(...)
-    {
-    }
-    try
-    {
-        temp_int_list[1] = stoi(Variable2value);
-        value2 = true;
-    }
-    catch(...)
-    {
-    }
-    
-    if (value1) 
-    {
-        value1Int = temp_int_list[0]; 
-    }
-    else 
-    {
-        value1Int = getVariableInteger(Variable1value);
-    }
-
-    if (value2) 
-    {
-        value2Int = temp_int_list[1];
-    } 
-    else 
-    {
-        value2Int = getVariableInteger(Variable2value); 
-    }
-
-    switch (operation) {
-    case '+':
-        result = value1Int + value2Int;
-        break;
-    case '-':
-        result = value1Int - value2Int;
-        break;
-    case '*':
-        result = value1Int * value2Int;
-        break;
-    case '/':
-        result = value1Int / value2Int;
-        break;
-    default:
-        break;
-    }
-
-    setVariablesInteger(Variable3sum, result);
-
-}
 void Interpreter::print(string *line)
 {
     cout << line << endl;
@@ -175,25 +103,9 @@ vector<string> Interpreter::tokenize(const string& expression) {
         tokens.push_back(token);
     return tokens;
 }
-int Interpreter::performOperation(int a, int b, char op) {
-        switch (op) {
-            case '+':
-                return a + b;
-            case '-':
-                return a - b;
-            case '*':
-                return a * b;
-            case '/':
-                if (b != 0)
-                    return a / b;
-                else
-                    throw runtime_error("Division by zero");
-            default:
-                throw runtime_error("Invalid operator");
-        }
-    }
+
 // Функция для вычисления значения выражения
-int Interpreter::evaluateExpression(string expression) {
+int Interpreter::evaluateExpression(string& expression) {
     string expressionWithoutSpaces = removeSpaces(expression);
     vector<string> expressions = tokenize(expressionWithoutSpaces);
 
@@ -202,12 +114,13 @@ int Interpreter::evaluateExpression(string expression) {
     string variableName;
     for (const auto& expr : expressions) {
             if (expr == ";") {
-                continue; // Пропускаем символ конца строки
+                continue; 
             }
             vector<string> tokens = tokenize(expr);
             for (const auto& token : tokens) {
                 if (isVariable(token, variablesInteger)) {
                     variableName = token;
+                    result = getVariableInteger(variableName);
                 } else if (isOperator(token[0])) {
                     operation = token[0];
                 } else {
@@ -225,8 +138,9 @@ int Interpreter::evaluateExpression(string expression) {
                             throw runtime_error("Division by zero");
                         }
                     }
-                    setVariablesInteger(variableName, result);
+                    //setVariablesInteger(variableName, result);
                 }
+
             }
         }
     return result;
@@ -235,19 +149,22 @@ int Interpreter::evaluateExpression(string expression) {
 
 
 void Interpreter::DivisionIntoMethodsAndTokens(string line)
-{//a = b * (c / d)
+{
     line = removeSpaces(line);
     size_t pos = line.find('='); 
 
     string resultViariableName;
+    string Method;
     if (pos != string::npos)
     {
         resultViariableName = line.substr(0, pos);
-        setVariablesInteger(resultViariableName, evaluateExpression(line));
+        Method = line.substr(pos + 1);
+        setVariablesInteger(resultViariableName, evaluateExpression(Method));
     }
+
 }
-string Interpreter::variablesName(string line)
-{//a = b * (c / d)
+string Interpreter::variablesName(string& line)
+{
     line = removeSpaces(line);
     size_t pos = line.find('='); 
     string resultViariableName;
@@ -257,12 +174,12 @@ string Interpreter::variablesName(string line)
     }
     return resultViariableName;
 }
-string Interpreter::removeSpaces(const string& str) 
+string Interpreter::removeSpaces(const string& line) 
 {
   string result;
-  result.reserve(str.size()); // оптимизация
+  result.reserve(line.size()); 
 
-  for (char c : str) {
+  for (char c : line) {
     if (c != ' ') {
       result += c; 
     }
@@ -294,51 +211,11 @@ void Interpreter::ReadTokensFunction(string line)
     {
         DivisionIntoMethodsAndTokens(line);
     }
-    
-    // else if (LineContainsWord("+",line))
-    // {
-    //     PerformingMathematicalOperations(LineBetweenTokens("= ", " + ", line), LineBetweenTokens(" + ", ";", line), LineBetweenTokens("    ", " =", line), '+');
-    // }           
-    // else if (LineContainsWord("-",line))
-    // {
-    //     PerformingMathematicalOperations(LineBetweenTokens("= ", " - ", line), LineBetweenTokens(" - ", ";", line), LineBetweenTokens("    ", " =", line), '-');
-    // }           
-    // else if (LineContainsWord("*",line))
-    // {
-    //     PerformingMathematicalOperations(LineBetweenTokens("= ", " * ", line), LineBetweenTokens(" * ", ";", line), LineBetweenTokens("    ", " =", line), '*');
-    // }           
-    // else if (LineContainsWord("/",line))
-    // {
-    //     PerformingMathematicalOperations(LineBetweenTokens("= ", " / ", line), LineBetweenTokens(" / ", ";", line), LineBetweenTokens("    ", " =", line), '/');
-    // }           
-    
-    
-    
-    // for (const auto& token : tokens) 
-    // {
-    //     posed_token = line.find(token); 
-    //     if (posed_token != string::npos)
-    //     {            
-            
-    //     }    
-    // }
 }
 
 //создание функций
 void Interpreter::ReadTokensFromLine()
 {    
-    /*
-    // Определение функции goga
-    defineFunction("goga", [](){
-        cout << "Hello from goga function!" << endl;
-    });
-
-    // Вызов функции goga
-    callFunction("goga");
-    */
-    // temp = LineBetweenTokens(tokens[0], tokens[1]);
-
-    // cout << temp << endl;
     if (!writing_content_func)
     {
         for (const auto& token : tokens) 
@@ -350,7 +227,7 @@ void Interpreter::ReadTokensFromLine()
                 left_part_line = line_file.substr(0, posed_token);
                 right_part_line = line_file.substr(posed_token + 1);
                 
-                if (token == "$func ")
+                if (token == "func ")
                 {
                     if (!currentFunction.empty())
                     {
@@ -364,14 +241,14 @@ void Interpreter::ReadTokensFromLine()
                         writing_content_func = true;
                     }
                 }
-                else if (token == "$start")
+                else if (token == "start ")
                 {
                     if (!currentFunction.empty())
                     {
                         defineFunction(currentFunction, functionContent);
                         functionContent.clear();
                     }
-                    currentFunction = "$start";
+                    currentFunction = "start";
                     if (line_file.back() == '{')
                     {
                         writing_content_func = true;
@@ -399,7 +276,7 @@ void Interpreter::ReadTokensFromLine()
 
 
 // поиск строки межру символами
-string Interpreter::LineBetweenTokens(string token_1, string token_2, string line)
+string Interpreter::LineBetweenTokens(const string& token_1, const string& token_2, const string& line)
 {
     size_t startPos = line.find(token_1);
     if (startPos == std::string::npos)
@@ -436,7 +313,6 @@ void Interpreter::callFunction(const string& name)
     auto it = functionBlocks.find(name);
     if (it != functionBlocks.end()) 
     {
-        //cout << "Content of function " << name << ":\n" << it->second << endl << "||" << endl;
         ExecutionOfFunction(it->second);
     } 
     else
@@ -502,4 +378,128 @@ string Interpreter::IterateOverStringCharacterByCharacter(string line)
     }
     return result;
 }
+
+
+void Interpreter::PerformingMathematicalOperations(string Variable1value, string Variable2value, string Variable3sum, char operation)
+{
+    bool value1 = false;
+    bool value2 = false;
+    int value1Int = 0;
+    int value2Int = 0;
+    int result = 0;
+    try
+    {
+        temp_int_list[0] = stoi(Variable1value);
+        value1 = true;
+    }
+    catch(...)
+    {
+    }
+    try
+    {
+        temp_int_list[1] = stoi(Variable2value);
+        value2 = true;
+    }
+    catch(...)
+    {
+    }
+    
+    if (value1) 
+    {
+        value1Int = temp_int_list[0]; 
+    }
+    else 
+    {
+        value1Int = getVariableInteger(Variable1value);
+    }
+
+    if (value2) 
+    {
+        value2Int = temp_int_list[1];
+    } 
+    else 
+    {
+        value2Int = getVariableInteger(Variable2value); 
+    }
+
+    switch (operation) {
+    case '+':
+        result = value1Int + value2Int;
+        break;
+    case '-':
+        result = value1Int - value2Int;
+        break;
+    case '*':
+        result = value1Int * value2Int;
+        break;
+    case '/':
+        result = value1Int / value2Int;
+        break;
+    default:
+        break;
+    }
+
+    setVariablesInteger(Variable3sum, result);
+
+}
+
+int Interpreter::performOperation(int a, int b, char op) {
+        switch (op) {
+            case '+':
+                return a + b;
+            case '-':
+                return a - b;
+            case '*':
+                return a * b;
+            case '/':
+                if (b != 0)
+                    return a / b;
+                else
+                    throw runtime_error("Division by zero");
+            default:
+                throw runtime_error("Invalid operator");
+        }
+    }
+    
+
+    
+    // Определение функции goga
+    defineFunction("goga", [](){
+        cout << "Hello from goga function!" << endl;
+    });
+
+    // Вызов функции goga
+    callFunction("goga");
+    // temp = LineBetweenTokens(tokens[0], tokens[1]);
+
+    // cout << temp << endl;
+
+     else if (LineContainsWord("+",line))
+    {
+        PerformingMathematicalOperations(LineBetweenTokens("= ", " + ", line), LineBetweenTokens(" + ", ";", line), LineBetweenTokens("    ", " =", line), '+');
+    }           
+    else if (LineContainsWord("-",line))
+    {
+        PerformingMathematicalOperations(LineBetweenTokens("= ", " - ", line), LineBetweenTokens(" - ", ";", line), LineBetweenTokens("    ", " =", line), '-');
+    }           
+    else if (LineContainsWord("*",line))
+    {
+        PerformingMathematicalOperations(LineBetweenTokens("= ", " * ", line), LineBetweenTokens(" * ", ";", line), LineBetweenTokens("    ", " =", line), '*');
+    }           
+    else if (LineContainsWord("/",line))
+    {
+        PerformingMathematicalOperations(LineBetweenTokens("= ", " / ", line), LineBetweenTokens(" / ", ";", line), LineBetweenTokens("    ", " =", line), '/');
+    }           
+    
+    
+    
+    for (const auto& token : tokens) 
+    {
+        posed_token = line.find(token); 
+        if (posed_token != string::npos)
+        {            
+            
+        }    
+    }
 */
+    

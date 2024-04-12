@@ -1,8 +1,5 @@
-#include <windows.h>
 #include "globals.hpp"
 #include "interpreter.hpp"
-
-using namespace std;
 
 int main(int argc, char *argv[])
 {
@@ -17,7 +14,7 @@ int main(int argc, char *argv[])
 
     if (list_argv[1] == "--version")
     {
-        cout << "Nexor version 0.01" << endl;
+        cout << "Nexor version 0.03" << endl;
         return 0;
     }
     else if (list_argv[1] == "help")
@@ -38,7 +35,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            cerr << "Error getting current working directory\n";
+            cerr << "Error getting current working directory" << endl;
             return 1;
         }  
         

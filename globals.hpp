@@ -7,5 +7,6 @@
 #include <functional>
 #include <sstream>
 #include <cmath>
+#include <windows.h>
 
 using namespace std;
