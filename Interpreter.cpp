@@ -3,9 +3,21 @@
 //основная функция
 void Interpreter::InterpreterMainFunc(const string& main_source_file_directory, const string& sourse_file_name)
 {
-    ReadingFileLineByLine(main_source_file_directory, '/'+ sourse_file_name);
-}
 
+    
+    size_t pos = sourse_file_name.find('.'); 
+    if (pos != string::npos)
+    {
+        if (sourse_file_name.substr(pos + 1) == "nxr")
+        {
+            ReadingFileLineByLine(main_source_file_directory, '/'+ sourse_file_name);
+        }  
+    }
+    else
+    {
+        cerr << "Error: File extension is not supported" << endl;
+    }
+}
 // чтение файла
 void Interpreter::ReadingFileLineByLine(const string& main_source_file_directory, const string& sourse_file_name)
 {
