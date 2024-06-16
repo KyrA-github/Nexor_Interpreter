@@ -1,18 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\main.cpp">
+    <ClCompile Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\Interpreter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\Interpreter.cpp">
+    <ClCompile Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\Variables_int.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\Interpreter.hpp">
+    <ClInclude Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\Interpreter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\globals.hpp">
+    <ClInclude Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\Variables_int.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\globals.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\struct.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

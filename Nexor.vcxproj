@@ -309,10 +309,13 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\main.cpp" />
-    <ClInclude Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\Interpreter.hpp" />
-    <ClInclude Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\globals.hpp" />
-    <ClCompile Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\Interpreter.cpp" />
+    <ClCompile Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\Interpreter.cpp" />
+    <ClInclude Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\Interpreter.hpp" />
+    <ClCompile Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\Variables_int.cpp" />
+    <ClInclude Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\Variables_int.hpp" />
+    <ClInclude Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\globals.hpp" />
+    <ClCompile Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\main.cpp" />
+    <ClInclude Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\src\struct.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="E:\C_Projects_VS\cmake_project\Nexor_intpr\ZERO_CHECK.vcxproj">
