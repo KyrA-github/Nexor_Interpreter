@@ -1,6 +1,7 @@
 #pragma once
 #include "globals.hpp"
 #include "Variables_int.hpp"
+#include "Metods.hpp"
 
 
 class Interpreter
@@ -11,8 +12,6 @@ public:
     //блок функций
     unordered_map<string, string> functionBlocks;
     vector<string> list_function;
-    //блок метода
-    unordered_map<string, string> metodlocks;
     // основная функция
     void InterpreterMainFunc(const string& main_source_file_directory, const string& sourse_file_name);
 private:
@@ -39,9 +38,7 @@ private:
     void PerformingMathematicalOperations(string Variable1value, string Variable2value, string Variable3sum, char operation);
 
     /*методы*/
-    //вывод текста
-    void print(string *line);
-    
+
     /*работа со строками*/
     //удаление пробелов
     string removeSpaces(const string& line);
@@ -100,5 +97,3 @@ private:
         '(', ')', '=', '+', '-', '*', '/'
     };
 };
-
-

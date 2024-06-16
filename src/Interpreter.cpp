@@ -57,11 +57,6 @@ void Interpreter::ExecutionOfFunction(const string& function_content)
     }
 }
 
-void Interpreter::print(string *line)
-{
-    cout << line << endl;
-}
-
 // Функция для проверки, является ли символ разделителем
 bool Interpreter::isDelimiter(char c) {
     return c == ' ' || c == '=' || c == '\t' || c == '\n' || c == '\r' || c == ';';
